@@ -1,0 +1,81 @@
+name: Build and deploy vehicle insurance app
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: vehicle-insurance-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build and test the image
+        run: |
+          docker build -t vehicle-insurance:ci .
+          docker run -d --name vehicle-ci -p 127.0.0.1:5000:5000 vehicle-insurance:ci
+          if ! curl --retry 12 --retry-connrefused --retry-delay 2 -fsS \
+            http://127.0.0.1:5000/ -o /dev/null; then
+            docker logs vehicle-ci
+            exit 1
+          fi
+
+      - name: Configure AWS access
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Log in to ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Push image and deploy to EC2
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          REPOSITORY: ${{ vars.ECR_REPO }}
+          INSTANCE_ID: ${{ vars.EC2_INSTANCE_ID }}
+        run: |
+          image="$REGISTRY/$REPOSITORY:$GITHUB_SHA"
+          docker tag vehicle-insurance:ci "$image"
+          docker push "$image"
+
+          script=$(cat <<EOF
+          set -eu
+          test -s /etc/vehicle-insurance.env
+          aws ecr get-login-password --region "$AWS_REGION" | \
+            docker login --username AWS --password-stdin "$REGISTRY"
+          docker pull "$image"
+          if docker container inspect vehicle-insurance >/dev/null 2>&1; then
+            docker rm -f vehicle-insurance
+          fi
+          docker run -d --restart unless-stopped --name vehicle-insurance \
+            --env-file /etc/vehicle-insurance.env \
+            -p 127.0.0.1:5000:5000 "$image"
+          curl --retry 12 --retry-connrefused --retry-delay 2 -fsS \
+            http://127.0.0.1:5000/ -o /dev/null
+          EOF
+          )
+
+          command_id=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name AWS-RunShellScript \
+            --parameters "$(jq -n --arg script "$script" '{commands: [$script]}')" \
+            --query 'Command.CommandId' --output text)
+
+          if ! aws ssm wait command-executed \
+            --command-id "$command_id" --instance-id "$INSTANCE_ID"; then
+            aws ssm get-command-invocation \
+              --command-id "$command_id" --instance-id "$INSTANCE_ID"
+            exit 1
+          fi
