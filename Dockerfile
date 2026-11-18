@@ -10,6 +10,8 @@ COPY templates/ ./templates/
 COPY static/ ./static/
 
 RUN python -m pip install --no-cache-dir -r requirements.txt
+RUN touch /app/.project-root
+
 
 EXPOSE 5000
 CMD ["python", "app.py"]
