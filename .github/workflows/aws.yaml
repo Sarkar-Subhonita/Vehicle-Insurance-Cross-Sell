@@ -21,14 +21,27 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Build and test the image
+        shell: bash
         run: |
           docker build -t vehicle-insurance:ci .
           docker run -d --name vehicle-ci -p 127.0.0.1:5000:5000 vehicle-insurance:ci
-          if ! curl --retry 12 --retry-connrefused --retry-delay 2 -fsS \
-            http://127.0.0.1:5000/ -o /dev/null; then
-            docker logs vehicle-ci
-            exit 1
-          fi
+
+          for attempt in {1..30}; do
+            if curl -fsS --max-time 2 http://127.0.0.1:5000/ -o /dev/null; then
+              echo "Homepage is responding."
+              exit 0
+            fi
+
+            if [ "$(docker inspect --format '{{.State.Running}}' vehicle-ci)" != "true" ]; then
+              break
+            fi
+
+            sleep 2
+          done
+
+          docker ps -a --filter name=vehicle-ci
+          docker logs vehicle-ci
+          exit 1
 
       - name: Configure AWS access
         uses: aws-actions/configure-aws-credentials@v6.3.0
