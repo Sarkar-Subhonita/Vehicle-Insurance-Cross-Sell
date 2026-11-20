@@ -172,7 +172,7 @@ export AWS_SECRET_ACCESS_KEY="..."
 
 ### S3 Bucket
 
-- Region: `us-east-1`
+- Region: `ap-southeast-2`
 - Bucket: `my-model-mlopsproj`
 
 ---
