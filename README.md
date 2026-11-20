@@ -1,4 +1,4 @@
-# Vehicle Price Prediction - End-to-End MLOps Project
+# Vehicle Insurance Prediction - End-to-End MLOps Project
 
 Welcome to the **Vehicle Price Prediction** MLOps project! This repository demonstrates a full-fledged Machine Learning workflow with seamless integration of:
 
