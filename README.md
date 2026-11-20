@@ -1,6 +1,6 @@
 # Vehicle Insurance Prediction - End-to-End MLOps Project
 
-Welcome to the **Vehicle Price Prediction** MLOps project! This repository demonstrates a full-fledged Machine Learning workflow with seamless integration of:
+Welcome to the **Vehicle Insurance Prediction** MLOps project! This repository demonstrates a full-fledged Machine Learning workflow with seamless integration of:
 
 - Automation
 - Packaging
@@ -10,7 +10,7 @@ Welcome to the **Vehicle Price Prediction** MLOps project! This repository demon
 - Dockerization
 - CI/CD with GitHub Actions & AWS
 
-> **Goal**: Build a production-grade ML pipeline that predicts vehicle prices using modern DevOps principles.
+> **Goal**: Build a production-grade ML pipeline that predicts vehicle insurance using modern DevOps principles.
 
 ---
 
