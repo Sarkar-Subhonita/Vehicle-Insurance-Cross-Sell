@@ -54,7 +54,7 @@ Welcome to the **Vehicle Insurance Prediction** MLOps project! This repository d
 - AWS S3 model storage with versioning
 - Real-time prediction API served with Flask
 - CI/CD using Docker, GitHub Actions, ECR, and EC2
-- Fully automated deployment on port `5080` with custom domain support
+- Fully automated deployment on port `5000` with custom domain support
 
 ---
 
@@ -204,12 +204,12 @@ http://<EC2-PUBLIC-IP>:5000/train
 
 ## Secrets Used in GitHub Actions
 
-| Name                    | Description                    |
-| ----------------------- | ------------------------------ |
-| `AWS_ACCESS_KEY_ID`     | AWS Access Key                 |
-| `AWS_SECRET_ACCESS_KEY` | AWS Secret Key                 |
-| `AWS_DEFAULT_REGION`    | Default AWS Region (us-east-1) |
-| `ECR_REPO`              | Docker Repo URI from AWS ECR   |
+| Name                    | Description                         |
+| ----------------------- | ------------------------------------|
+| `AWS_ACCESS_KEY_ID`     | AWS Access Key                      |
+| `AWS_SECRET_ACCESS_KEY` | AWS Secret Key                      |
+| `AWS_DEFAULT_REGION`    | Default AWS Region (ap-southeast-2) |
+| `ECR_REPO`              | Docker Repo URI from AWS ECR        |
 
 ---
 
