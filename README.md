@@ -281,6 +281,3 @@ http://<EC2-PUBLIC-IP>:5000/
 - Improve the frontend UI
 - Switch to Terraform for infrastructure provisioning 
 ---
- 
-⭐ If you like this project, give it a star on GitHub!
- 
