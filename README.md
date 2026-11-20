@@ -194,10 +194,10 @@ Once deployed:
 http://<EC2-PUBLIC-IP>:5000/
 ```
 
-Use `/training` route to manually trigger model training:
+Use `/train` route to manually trigger model training:
 
 ```text
-http://<EC2-PUBLIC-IP>:5000/training
+http://<EC2-PUBLIC-IP>:5000/train
 ```
 
 ---
