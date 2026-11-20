@@ -1,0 +1,23 @@
+{
+  "mode": "simulated incoming batch",
+  "data_validation": {
+    "rows": 3600,
+    "missing_values": 0,
+    "duplicate_records": 0,
+    "duplicate_ids": 0,
+    "target_distribution": {
+      "0": 3164,
+      "1": 436
+    }
+  },
+  "historical_rows": 8400,
+  "new_training_rows": 1800,
+  "evaluation_rows": 1800,
+  "metric": "f1",
+  "metric_reason": "F1 balances precision and recall for the minority interested class.",
+  "rule": "Candidate F1 must be strictly higher than champion F1 on the same rows.",
+  "champion_f1": 0.4232456140350877,
+  "candidate_f1": 0.42036836403033584,
+  "decision": "Retain champion",
+  "champion_overwritten": false
+}
